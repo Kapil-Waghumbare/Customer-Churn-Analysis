@@ -1,0 +1,67 @@
+Overall Churn Rate
+
+Query 1-> Over all churn rate
+
+select 
+	count(*) as total_customers,
+   	sum(case when Churn = 'Yes' Then 1 else 0 end) as churmed_customers,
+   	round(sum(case when Churn = 'Yes' then 1 else 0 end ) * 100.0 /count(*),2) as churm_rate_percentage
+from customers;
+
+
+Query 2 -> Overall churn rate by customers
+
+select 
+	count(*) as total_customers,
+   	sum(case when Churn = 'Yes' Then 1 else 0 end) as churmed_customers,
+   	round(sum(case when Churn = 'Yes' then 1 else 0 end ) * 100.0 /count(*),2) as churm_rate_percentage
+from customers
+group by Contract
+order by churm_rate_percentage desc;
+
+
+
+
+Query 3-> MRR (Monthly Recurring Revenue) 
+
+select 
+	round(sum(case when Churn = 'Yes' then MonthlyCharges Else 0 end),2) as monthly_revenue_lost,
+   	round(sum(case when Churn = 'Yes' then MonthlyCharges else 0 end)*12,2) as annual_revenue_lost
+from customers;
+
+
+Query 4 -> Churn by Tenure Group
+
+SELECT 
+    CASE 
+        WHEN tenure BETWEEN 0 AND 12 THEN '0-12 Months'
+        WHEN tenure BETWEEN 13 AND 24 THEN '13-24 Months'
+        WHEN tenure BETWEEN 25 AND 48 THEN '25-48 Months'
+        WHEN tenure BETWEEN 49 AND 60 THEN '49-60 Months'
+        ELSE '60+ Months'
+    END AS tenure_group,
+    COUNT(*) AS total_customers,
+    SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS churned,
+    ROUND(SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS churn_rate_percent
+FROM customers
+GROUP BY tenure_group
+ORDER BY churn_rate_percent DESC;
+
+
+Query5->Churn by Payment Method
+SELECT 
+    PaymentMethod,
+    COUNT(*) AS total_customers,
+    SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) AS churned,
+    ROUND(SUM(CASE WHEN Churn = 'Yes' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS churn_rate_percent
+FROM customers
+GROUP BY PaymentMethod
+ORDER BY churn_rate_percent DESC;
+
+Query 6 — Average Customer Lifetime Value (CLV)
+
+SELECT 
+    ROUND(AVG(tenure * MonthlyCharges), 2) AS avg_clv_all_customers,
+    ROUND(AVG(CASE WHEN Churn = 'No' THEN tenure * MonthlyCharges END), 2) AS avg_clv_active,
+    ROUND(AVG(CASE WHEN Churn = 'Yes' THEN tenure * MonthlyCharges END), 2) AS avg_clv_churned
+FROM customers;
