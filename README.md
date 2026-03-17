@@ -39,4 +39,4 @@ monthly revenue loss ($1.67M annually).
 ---
 
 ## Dashboard Preview
-![Dashboard](Customer-Churn-Analysis/3.%20Dashboard/Dashboard.png))
+![Dashboard](Customer-Churn-Analysis/3.%20Dashboard/Dashboard.png)
